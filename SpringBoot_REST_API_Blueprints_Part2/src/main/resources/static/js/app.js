@@ -4,7 +4,7 @@ var app = (function () {
   var listBluePrints = [];
   var points = 0;
   var clicks = 0;
-
+  var lista = [];
   var _loadBlueprints = (data) => {
     
     data.map((bluePrint) => {
@@ -61,50 +61,85 @@ var app = (function () {
 
   };
 
+  function getOffset(obj) {
+          var offsetLeft = 0;
+          var offsetTop = 0;
+          do {
+            if (!isNaN(obj.offsetLeft)) {
+                offsetLeft += obj.offsetLeft;
+            }
+            if (!isNaN(obj.offsetTop)) {
+                offsetTop += obj.offsetTop;
+            }
+          } while(obj = obj.offsetParent );
+          return {left: offsetLeft, top: offsetTop};
+      }
+
   const drawCanvas = (author, bname) => {
     clicks = 0;
     apiclient.getBlueprintsByNameAndAuthor(author, bname, (data) => {   
       const points = data.points;
-      let canvas = $('#canvas')[0];
-      canvas.width = canvas.width;
-      if (canvas.getContext) {
-
-        var ctx = canvas.getContext('2d');
-        ctx.beginPath();
-        
-        
-        ctx.moveTo(points[0].x, points[0].y);
-        console.log(points[0].x, points[0].y);
-        for (var i = 1; i < points.length; i++) {
-          console.log(points[i].x, points[i].y);
-          ctx.lineTo(points[i].x, points[i].y);
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-        ctx.closePath();
-        ctx.stroke();
-      }
-      if(window.PointerEvent) {
-        canvas.addEventListener("pointerdown", function(event){
-          clicks+=1;
-          alert('pointerdown at '+event.pageX+','+event.pageY);  
-          console.log("El numero de clicks es : " + clicks)
-        });
-      }
-      else {
-        canvas.addEventListener("mousedown", function(event){
-                    alert('mousedown at '+event.clientX+','+event.clientY);  
-
-          }
-        );
-      }
+      drawEmptyCanvas(points);
+      emptyList();
     })
   }
 
+  function iniCanvas(){
+    let canvas = $('#canvas')[0];
+    if(window.PointerEvent) {
+        var offSet = getOffset(canvas);
+        
+        console.log(offSet);
+        canvas.addEventListener("pointerdown", function(event){
+          var canvasX = (event.pageX - offSet["left"]);
+          var canvasY = (event.pageY - offSet["top"]);
+          clicks+=1;
+          lista.push({x:canvasX,y:canvasY});
+          drawEmptyCanvas(lista);
+          
+          console.log("El numero de clicks es : " + clicks);
+          console.log(lista);
+        });
+      }
+      else {
+        canvas.addEventListener("mousedown", function(event){ 
+          var canvasX = (event.pageX - offSet["left"]);
+          var canvasY = (event.pageY - offSet["top"]);
+          lista.push({x:canvasX,y:canvasY});      
+          drawEmptyCanvas(lista);
+          }
+        );
+      } 
+  }
 
+  function drawEmptyCanvas(points){
+    let canvas = $('#canvas')[0];
+    canvas.width = canvas.width;
+      if (canvas.getContext) {
+        var ctx = canvas.getContext('2d');
+        /**if(points.length > 2){
+          points.shift();
+        }**/
+        
+        for (var i = 0; i < points.length; i++) {
+          console.log(points[i].x, points[i].y);
+          ctx.lineTo(points[i].x, points[i].y);
+          if(points.length == i+1){
+            ctx.moveTo(points[i].x, points[i].y);
+          }
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+       // ctx.closePath();
+        ctx.stroke();
+      }
+  }
+
+  function emptyList(){
+    lista = [];
+  }
   return {
     setBlueprintsList: setBlueprintsList,
-
-
+    iniCanvas: iniCanvas
   };
 
 })();
