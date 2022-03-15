@@ -87,10 +87,8 @@ var app = (function () {
   function iniCanvas(){
     let canvas = $('#canvas')[0];
     if(window.PointerEvent) {
-        var offSet = getOffset(canvas);
-        
-        console.log(offSet);
         canvas.addEventListener("pointerdown", function(event){
+          var offSet = getOffset(canvas);
           var canvasX = (event.pageX - offSet["left"]);
           var canvasY = (event.pageY - offSet["top"]);
           clicks+=1;
@@ -103,6 +101,7 @@ var app = (function () {
       }
       else {
         canvas.addEventListener("mousedown", function(event){ 
+          var offSet = getOffset(canvas);
           var canvasX = (event.pageX - offSet["left"]);
           var canvasY = (event.pageY - offSet["top"]);
           lista.push({x:canvasX,y:canvasY});      
