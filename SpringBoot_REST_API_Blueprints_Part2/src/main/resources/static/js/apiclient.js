@@ -34,11 +34,31 @@ var apiclient=(function(){
             contentType: "application/json"
         });
     }
+    const createNewBluePrint = (_authname,bp,lista) =>{
+        var obj = {author:_authname,name:bp,points:lista};
+        console.log(obj);
+        return $.ajax({
+            url: "/blueprints/add",
+            type: 'POST',
+            data: JSON.stringify(obj),
+            contentType: "application/json"
+        });
+    }
+    const deleteBluePrint = (current) =>{
+        return $.ajax({
+            url: "/blueprints/delete",
+            type: 'DELETE',
+            data: JSON.stringify(current),
+            contentType: "application/json"
+        });
+    } 
     return{
         getBlueprintsByAuthor:getBlueprintsByAuthor,
         getBlueprintsByNameAndAuthor:getBlueprintsByNameAndAuthor,
         getBlueprints:getBlueprints,
-        updateBlueprints:updateBlueprints
+        updateBlueprints:updateBlueprints,
+        createNewBluePrint:createNewBluePrint,
+        deleteBluePrint:deleteBluePrint
     }
 
 })();

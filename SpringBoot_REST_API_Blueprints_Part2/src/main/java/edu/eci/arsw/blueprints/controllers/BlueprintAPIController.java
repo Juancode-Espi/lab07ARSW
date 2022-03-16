@@ -32,38 +32,38 @@ public class BlueprintAPIController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getAllBluePrints() {
         try {
-            //String gsonToString = this.stringToGson(blueprintsServices.getAllBlueprints());
-            //obtener datos que se enviarán a través del API
+            // String gsonToString =
+            // this.stringToGson(blueprintsServices.getAllBlueprints());
+            // obtener datos que se enviarán a través del API
             return new ResponseEntity<>(blueprintsServices.getAllBlueprints(), HttpStatus.ACCEPTED);
         } catch (Exception ex) {
             Logger.getLogger(BlueprintAPIController.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>("Error 404", HttpStatus.NOT_FOUND);
         }
 
-
     }
 
-    @RequestMapping(method = RequestMethod.GET, value ="/authors/{authors}")
-    public ResponseEntity<?> getBlueprintsByAuthor(@PathVariable String authors){
+    @RequestMapping(method = RequestMethod.GET, value = "/authors/{authors}")
+    public ResponseEntity<?> getBlueprintsByAuthor(@PathVariable String authors) {
         try {
-            return new ResponseEntity<>(blueprintsServices.getBlueprintsByAuthor(authors),HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(blueprintsServices.getBlueprintsByAuthor(authors), HttpStatus.ACCEPTED);
         } catch (BlueprintNotFoundException e) {
             e.printStackTrace();
             return new ResponseEntity<>("Error 404", HttpStatus.NOT_FOUND);
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET,value = "/authors/{author}/bpname/{bpname}")
-    public ResponseEntity<?> getBluePrint(@PathVariable String author, @PathVariable String bpname ){
+    @RequestMapping(method = RequestMethod.GET, value = "/authors/{author}/bpname/{bpname}")
+    public ResponseEntity<?> getBluePrint(@PathVariable String author, @PathVariable String bpname) {
         try {
-            return new ResponseEntity<>(blueprintsServices.getBlueprint(author,bpname), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(blueprintsServices.getBlueprint(author, bpname), HttpStatus.ACCEPTED);
         } catch (BlueprintNotFoundException e) {
             return new ResponseEntity<>("Error 404", HttpStatus.NOT_FOUND);
         }
 
     }
 
-    //POST
+    // POST
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseEntity<?> manejadorPostRecursoPlanos(@RequestBody Blueprint blueprint) {
         try {
@@ -75,15 +75,28 @@ public class BlueprintAPIController {
         }
     }
 
-    //PUT
+    // PUT
     @RequestMapping(value = "/authors/{author}/blueprints/{bpname}", method = RequestMethod.PUT)
-    public ResponseEntity<?> putBlueprintsByAuthor(@PathVariable String author, @PathVariable String bpname, @RequestBody Blueprint blueprint) {
-        try{
-            blueprintsServices.deleteAuthorsBpname(author,bpname);
+    public ResponseEntity<?> putBlueprintsByAuthor(@PathVariable String author, @PathVariable String bpname,
+            @RequestBody Blueprint blueprint) {
+        try {
+            blueprintsServices.deleteAuthorsBpname(author, bpname);
             blueprintsServices.addNewBlueprint(blueprint);
             return ResponseEntity.ok(blueprint);
-        }catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>("Error 404", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // DELETE
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteBluePrint(@RequestBody Blueprint blueprint) {
+        try {
+            blueprintsServices.deleteAuthorsBpname(blueprint.getAuthor(), blueprint.getName());
+            return ResponseEntity.ok(blueprint);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Error 404", HttpStatus.FORBIDDEN);
         }
     }
 }

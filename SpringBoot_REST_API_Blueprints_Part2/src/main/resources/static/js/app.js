@@ -42,6 +42,7 @@ var app = (function () {
       if(lista.length != 0){
         apiclient.updateBlueprints(current,lista);
       }
+    emptyList();
     }
     
 
@@ -70,7 +71,11 @@ var app = (function () {
     }
 
   };
-
+  function createNewBluePrint(bp){
+    apiclient.createNewBluePrint(_authname,bp,lista);
+    emptyList();
+    clearCanvas();
+  }
   function getOffset(obj) {
           var offsetLeft = 0;
           var offsetTop = 0;
@@ -143,6 +148,20 @@ var app = (function () {
         ctx.stroke();
       }
   }
+  function deleteC(){
+     if(!($.isEmptyObject(current))){
+      apiclient.deleteBluePrint(current);
+      emptyList();
+      clearCanvas();
+      $('#table > tbody').empty();
+    }
+  }
+  function clearCanvas(){
+        let canvas = $("#canvas")[0];
+        let canvas2d = canvas.getContext("2d");
+        canvas2d.clearRect(0,0,canvas.width,canvas.height);
+        canvas2d.beginPath();
+    }
 
   function emptyList(){
     lista = [];
@@ -150,7 +169,9 @@ var app = (function () {
   return {
     setBlueprintsList: setBlueprintsList,
     iniCanvas: iniCanvas,
-    save: saveBlueprints
+    save: saveBlueprints,
+    createNewBluePrint:createNewBluePrint,
+    deleteC:deleteC
   };
 
 })();

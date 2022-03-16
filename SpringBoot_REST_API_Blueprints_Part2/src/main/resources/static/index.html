@@ -38,6 +38,11 @@
             </tbody>
         </table>
         <span id="totalPoints"></span>
+        <div id="createB">
+            <button id="create" class="btn btn-info" onclick="app.createNewBluePrint(bp.value)">Create new blueprint</button>
+            <input id="bp" placeholder="new Blueprint"></input>
+        </div>
+        
         <h3> Canvas </h3>
         <canvas id="canvas" class="canvas" width="700" height="500" style="border:1px solid #000000;" id="coords">>
         </canvas>
@@ -45,7 +50,7 @@
             <button id="save" type="button" class="btn btn-success" onclick="app.save()">
                 Save/Update
             </button>     
-            <button id="delete" type="button" class="btn btn-danger">
+            <button id="delete" type="button" class="btn btn-danger" onclick="app.deleteC()">
                 Delete
             </button>
         </div>
