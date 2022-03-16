@@ -5,10 +5,13 @@ var app = (function () {
   var points = 0;
   var clicks = 0;
   var lista = [];
+  var current = {};
+
   var _loadBlueprints = (data) => {
     
     data.map((bluePrint) => {
       const object = {};
+      object.auth = bluePrint.author;
       object.name = bluePrint[Object.keys(bluePrint)[2]];
       object.nPoints = bluePrint[Object.keys(bluePrint)[1]].length;
       listBluePrints.push(object);
@@ -20,22 +23,29 @@ var app = (function () {
                   <td>${obj.name}</td>
                   <td>${obj.nPoints}</td>
                   <td><button class="btn btn-primary">Open</button></td>
-              </tr>`).on("click", "button", () => drawCanvas(_authname, obj.name)));
+              </tr>`).on("click", "button", () => drawCanvas(obj.auth, obj.name)));
         points += obj.nPoints;
         $("#totalPoints").html("Total user Points: " + points);
       });
 
   }
 
+  function saveBlueprints() {
+    $('#table > tbody').empty();
+    listBlueprints = [];
+    points = 0;
+    clicks = 0;
+    console.log(current);
+    if($.isEmptyObject(current)){
+      apiclient.getBlueprints(_loadBlueprints);
+    }else{
+      if(lista.length != 0){
+        apiclient.updateBlueprints(current,lista);
+      }
+    }
+    
 
 
-
-
-  function pointerHandler(event) {
-    // Get a reference to our coordinates div
-    var coords = document.getElementById("coords");
-    // Write the coordinates of the pointer to the div
-    coords.innerHTML = 'x: ' + event.pageX + ', y: ' + event.pageY;
   }
   var _setAuthorName = (name) => {
     let text = name + "'s Blueprints";
@@ -77,7 +87,8 @@ var app = (function () {
 
   const drawCanvas = (author, bname) => {
     clicks = 0;
-    apiclient.getBlueprintsByNameAndAuthor(author, bname, (data) => {   
+    apiclient.getBlueprintsByNameAndAuthor(author, bname, (data) => {  
+      current = data;
       const points = data.points;
       drawEmptyCanvas(points);
       emptyList();
@@ -138,7 +149,8 @@ var app = (function () {
   }
   return {
     setBlueprintsList: setBlueprintsList,
-    iniCanvas: iniCanvas
+    iniCanvas: iniCanvas,
+    save: saveBlueprints
   };
 
 })();

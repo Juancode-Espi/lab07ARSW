@@ -1,0 +1,13 @@
+
+#container{
+    margin: auto;
+    width: 80%;
+    height: 80%;
+    padding: 10px;
+    text-align: center;
+    margin-top: 5%;
+    display: block;    
+}
+.canvas{
+    margin-left:11px;
+}
